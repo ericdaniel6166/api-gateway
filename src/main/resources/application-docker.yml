@@ -1,0 +1,2 @@
+app:
+  eureka-hostname: discovery-server
