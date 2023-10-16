@@ -3,6 +3,10 @@ app:
   eureka-port: 8761
   server-port: 8181
   application-name: api-gateway
+  product-service-context-path: api/product
+  order-service-context-path: api/order
+  api-docs-path: api-docs
+  hostname: localhost
 
 spring:
   application:
@@ -10,8 +14,17 @@ spring:
   profiles:
     active:
       - local
+  main:
+    web-application-type: reactive
   cloud:
     gateway:
+      globalcors:
+        '[/**]':
+          allowedOrigins: "*"
+          allowedMethods: "*"
+      discovery:
+        locator:
+          enabled: true
       routes:
         - id: product-service
           uri: lb://product-service
@@ -65,6 +78,17 @@ logging:
     root: INFO
     org.springframework.cloud.gateway.route.RouteDefinitionRouteLocator: INFO
     org.springframework.cloud.gateway: TRACE
+  pattern:
+    level: "%5p[${spring.application.name:},%X{traceId:-},%X{spanId:-}]"
 
 server:
   port: ${app.server-port}
+
+springdoc:
+  swagger-ui:
+    urls:
+      - name: product-service
+        url: http://${app.hostname}:${app.server-port}/${app.product-service-context-path}/${app.api-docs-path}
+      - name: order-service
+        url: http://${app.hostname}:${app.server-port}/${app.order-service-context-path}/${app.api-docs-path}
+    path: /swagger-ui.html
