@@ -5,6 +5,9 @@ app:
   application-name: api-gateway
   product-service-context-path: api/product
   order-service-context-path: api/order
+  inventory-service-context-path: api/inventory
+  payment-service-context-path: api/payment
+  notification-service-context-path: api/notification
   api-docs-path: api-docs
   hostname: localhost
   zipkin-hostname: localhost
@@ -45,6 +48,10 @@ spring:
           uri: lb://notification-service
           predicates:
             - Path=/api/notification/**
+        - id: payment-service
+          uri: lb://payment-service
+          predicates:
+            - Path=/api/payment/**
         - id: discovery-server
           uri: http://${app.eureka-hostname}:${app.eureka-port}
           predicates:
@@ -65,9 +72,12 @@ eureka:
     lease-renewal-interval-in-seconds: 5
 
 management:
-  health:
-    circuitbreakers:
-      enabled: true
+  tracing:
+    enabled: true
+    propagation:
+      type: b3
+    sampling:
+      probability: 1.0
   endpoints:
     web:
       exposure:
@@ -75,9 +85,6 @@ management:
   endpoint:
     health:
       show-details: always
-  tracing:
-    sampling:
-      probability: 1.0
   zipkin:
     tracing:
       endpoint: http://${app.zipkin-hostname}:${app.zipkin-server-port}/${app.zipkin-context-path}
@@ -100,4 +107,11 @@ springdoc:
         url: http://${app.hostname}:${app.server-port}/${app.product-service-context-path}/${app.api-docs-path}
       - name: order-service
         url: http://${app.hostname}:${app.server-port}/${app.order-service-context-path}/${app.api-docs-path}
+      - name: inventory-service
+        url: http://${app.hostname}:${app.server-port}/${app.inventory-service-context-path}/${app.api-docs-path}
+      - name: payment-service
+        url: http://${app.hostname}:${app.server-port}/${app.payment-service-context-path}/${app.api-docs-path}
+      - name: notification-service
+        url: http://${app.hostname}:${app.server-port}/${app.notification-service-context-path}/${app.api-docs-path}
+
     path: /swagger-ui.html
