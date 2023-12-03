@@ -3,6 +3,7 @@ app:
   eureka-port: 8761
   server-port: 8181
   application-name: api-gateway
+  user-service-context-path: api/user
   product-service-context-path: api/product
   order-service-context-path: api/order
   inventory-service-context-path: api/inventory
@@ -36,6 +37,10 @@ spring:
           uri: lb://product-service
           predicates:
             - Path=/api/product/**
+        - id: user-service
+          uri: lb://user-service
+          predicates:
+            - Path=/api/user/**
         - id: order-service
           uri: lb://order-service
           predicates:
@@ -103,6 +108,8 @@ server:
 springdoc:
   swagger-ui:
     urls:
+      - name: user-service
+        url: http://${app.hostname}:${app.server-port}/${app.user-service-context-path}/${app.api-docs-path}
       - name: product-service
         url: http://${app.hostname}:${app.server-port}/${app.product-service-context-path}/${app.api-docs-path}
       - name: order-service
