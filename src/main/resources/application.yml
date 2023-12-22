@@ -36,13 +36,17 @@ spring:
         - id: product-service
           uri: lb://product-service
           predicates:
+            - Path=/api/product/${app.api-docs-path}
+        - id: product-service
+          uri: lb://product-service
+          predicates:
             - Path=/api/product/**
           filters:
             - AuthenticationFilter
         - id: user-service
           uri: lb://user-service
           predicates:
-            - Path=/api/user/auth/**
+            - Path=/api/user/auth/**, /api/user/${app.api-docs-path}
         - id: user-service
           uri: lb://user-service
           predicates:
