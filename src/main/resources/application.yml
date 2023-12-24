@@ -36,13 +36,17 @@ spring:
         - id: product-service
           uri: lb://product-service
           predicates:
+            - Path=/api/product/${app.api-docs-path}
+        - id: product-service
+          uri: lb://product-service
+          predicates:
             - Path=/api/product/**
           filters:
             - AuthenticationFilter
         - id: user-service
           uri: lb://user-service
           predicates:
-            - Path=/api/user/auth/**
+            - Path=/api/user/auth/**, /api/user/${app.api-docs-path}
         - id: user-service
           uri: lb://user-service
           predicates:
@@ -52,19 +56,43 @@ spring:
         - id: order-service
           uri: lb://order-service
           predicates:
+            - Path=/api/order/${app.api-docs-path}
+        - id: order-service
+          uri: lb://order-service
+          predicates:
             - Path=/api/order/**
+          filters:
+            - AuthenticationFilter
+        - id: inventory-service
+          uri: lb://inventory-service
+          predicates:
+            - Path=/api/inventory/${app.api-docs-path}
         - id: inventory-service
           uri: lb://inventory-service
           predicates:
             - Path=/api/inventory/**
+          filters:
+            - AuthenticationFilter
+        - id: notification-service
+          uri: lb://notification-service
+          predicates:
+            - Path=/api/notification/${app.api-docs-path}
         - id: notification-service
           uri: lb://notification-service
           predicates:
             - Path=/api/notification/**
+          filters:
+            - AuthenticationFilter
+        - id: payment-service
+          uri: lb://payment-service
+          predicates:
+            - Path=/api/payment/${app.api-docs-path}
         - id: payment-service
           uri: lb://payment-service
           predicates:
             - Path=/api/payment/**
+          filters:
+            - AuthenticationFilter
         - id: discovery-server
           uri: http://${app.eureka-hostname}:${app.eureka-port}
           predicates:

@@ -1,6 +1,7 @@
 package com.example.apigateway.filter;
 
 import com.example.springbootmicroservicesframework.utils.Const;
+import com.example.springbootmicroservicesframework.utils.UriConst;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,8 +16,11 @@ import org.springframework.web.reactive.function.client.WebClient;
 @Slf4j
 public class AuthenticationFilter extends AbstractGatewayFilterFactory<AuthenticationFilter.Config> {
 
+
     @Autowired
     private WebClient.Builder webClientBuilder;
+
+
 
     public AuthenticationFilter() {
         super(Config.class);
@@ -34,7 +38,7 @@ public class AuthenticationFilter extends AbstractGatewayFilterFactory<Authentic
                 throw new BadCredentialsException("token missing");
             }
             try {
-                return webClientBuilder.build().get().uri("lb://user-service/api/user/auth/verify-token")
+                return webClientBuilder.build().get().uri(UriConst.URI_VERIFY_TOKEN)
                         .headers(httpHeaders -> httpHeaders.set(HttpHeaders.AUTHORIZATION, authHeader))
                         .retrieve()
                         .bodyToMono(Object.class)
