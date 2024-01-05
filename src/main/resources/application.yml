@@ -14,6 +14,28 @@ app:
   zipkin-hostname: localhost
   zipkin-server-port: 9411
   zipkin-context-path: api/v2/spans
+  keycloak-host: localhost
+  keycloak-port: 8090
+
+security:
+  enabled: true
+  skip-urls:
+    - /eureka/**
+    - /${app.user-service-context-path}/${app.api-docs-path}
+    - /${app.product-service-context-path}/${app.api-docs-path}
+    - /${app.order-service-context-path}/${app.api-docs-path}
+    - /${app.inventory-service-context-path}/${app.api-docs-path}
+    - /${app.payment-service-context-path}/${app.api-docs-path}
+    - /${app.notification-service-context-path}/${app.api-docs-path}
+    - /swagger-ui.html
+    - /webjars/swagger-ui/**
+    - /v3/api-docs/swagger-config
+    - /${app.user-service-context-path}/test
+    - /${app.product-service-context-path}/test
+    - /${app.order-service-context-path}/test
+    - /${app.inventory-service-context-path}/test
+    - /${app.payment-service-context-path}/test
+    - /${app.notification-service-context-path}/test
 
 spring:
   application:
@@ -23,6 +45,12 @@ spring:
       - local
   main:
     web-application-type: reactive
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: http://${app.keycloak-host}:${app.keycloak-port}/realms/spring-boot-microservices-realm
+
   cloud:
     gateway:
       globalcors:
@@ -36,63 +64,27 @@ spring:
         - id: product-service
           uri: lb://product-service
           predicates:
-            - Path=/api/product/${app.api-docs-path}
-        - id: product-service
-          uri: lb://product-service
-          predicates:
             - Path=/api/product/**
-          filters:
-            - AuthenticationFilter
-        - id: user-service
-          uri: lb://user-service
-          predicates:
-            - Path=/api/user/auth/**, /api/user/${app.api-docs-path}
         - id: user-service
           uri: lb://user-service
           predicates:
             - Path=/api/user/**
-          filters:
-            - AuthenticationFilter
-        - id: order-service
-          uri: lb://order-service
-          predicates:
-            - Path=/api/order/${app.api-docs-path}
         - id: order-service
           uri: lb://order-service
           predicates:
             - Path=/api/order/**
-          filters:
-            - AuthenticationFilter
-        - id: inventory-service
-          uri: lb://inventory-service
-          predicates:
-            - Path=/api/inventory/${app.api-docs-path}
         - id: inventory-service
           uri: lb://inventory-service
           predicates:
             - Path=/api/inventory/**
-          filters:
-            - AuthenticationFilter
-        - id: notification-service
-          uri: lb://notification-service
-          predicates:
-            - Path=/api/notification/${app.api-docs-path}
         - id: notification-service
           uri: lb://notification-service
           predicates:
             - Path=/api/notification/**
-          filters:
-            - AuthenticationFilter
-        - id: payment-service
-          uri: lb://payment-service
-          predicates:
-            - Path=/api/payment/${app.api-docs-path}
         - id: payment-service
           uri: lb://payment-service
           predicates:
             - Path=/api/payment/**
-          filters:
-            - AuthenticationFilter
         - id: discovery-server
           uri: http://${app.eureka-hostname}:${app.eureka-port}
           predicates:
