@@ -1,4 +1,4 @@
- package com.example.apigateway.config;
+package com.example.apigateway.config;
 
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
@@ -16,7 +16,7 @@ import org.springframework.security.web.server.SecurityWebFilterChain;
 @RequiredArgsConstructor
 public class SecurityConfig {
 
-    SecurityProperties securityProperties;
+    SecurityProps securityProps;
 
     @Bean
     public SecurityWebFilterChain securityWebFilterChain(ServerHttpSecurity serverHttpSecurity) {
@@ -24,9 +24,11 @@ public class SecurityConfig {
                 .csrf(ServerHttpSecurity.CsrfSpec::disable)
                 .cors(ServerHttpSecurity.CorsSpec::disable)
                 .authorizeExchange(exchange -> exchange
-                        .pathMatchers(securityProperties.getSkipUrls()).permitAll()
+                        .pathMatchers(securityProps.getSkipUrls()).permitAll()
                         .anyExchange().authenticated())
-                .oauth2ResourceServer(oauth -> oauth.jwt(Customizer.withDefaults()))
+                .oauth2Login(Customizer.withDefaults())
+                .httpBasic(ServerHttpSecurity.HttpBasicSpec::disable)
+                .formLogin(ServerHttpSecurity.FormLoginSpec::disable)
                 .build();
     }
 

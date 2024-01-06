@@ -21,21 +21,15 @@ security:
   enabled: true
   skip-urls:
     - /eureka/**
-    - /${app.user-service-context-path}/${app.api-docs-path}
-    - /${app.product-service-context-path}/${app.api-docs-path}
-    - /${app.order-service-context-path}/${app.api-docs-path}
-    - /${app.inventory-service-context-path}/${app.api-docs-path}
-    - /${app.payment-service-context-path}/${app.api-docs-path}
-    - /${app.notification-service-context-path}/${app.api-docs-path}
+    - /${app.user-service-context-path}/**
+    - /${app.product-service-context-path}/**
+    - /${app.order-service-context-path}/**
+    - /${app.inventory-service-context-path}/**
+    - /${app.payment-service-context-path}/**
+    - /${app.notification-service-context-path}/**
     - /swagger-ui.html
     - /webjars/swagger-ui/**
     - /v3/api-docs/swagger-config
-    - /${app.user-service-context-path}/test
-    - /${app.product-service-context-path}/test
-    - /${app.order-service-context-path}/test
-    - /${app.inventory-service-context-path}/test
-    - /${app.payment-service-context-path}/test
-    - /${app.notification-service-context-path}/test
 
 spring:
   application:
@@ -47,9 +41,16 @@ spring:
     web-application-type: reactive
   security:
     oauth2:
-      resourceserver:
-        jwt:
-          issuer-uri: http://${app.keycloak-host}:${app.keycloak-port}/realms/spring-boot-microservices-realm
+      client:
+        provider:
+          keycloak:
+            issuer-uri: http://${app.keycloak-host}:${app.keycloak-port}/realms/spring-boot-microservices-realm
+        registration:
+          api-gateway:
+            provider: keycloak
+            client-id: api-gateway
+            client-secret: 123456789
+            scope: openid, profile, email, roles
 
   cloud:
     gateway:
@@ -60,6 +61,8 @@ spring:
       discovery:
         locator:
           enabled: true
+      default-filters:
+        - TokenRelay
       routes:
         - id: product-service
           uri: lb://product-service

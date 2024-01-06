@@ -12,6 +12,6 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 @ConditionalOnProperty(name = "security.enabled", havingValue = "true")
 @ConfigurationProperties(prefix = "security")
-public class SecurityProperties {
+public class SecurityProps {
     String[] skipUrls;
 }
