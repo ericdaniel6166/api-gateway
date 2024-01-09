@@ -46,9 +46,9 @@ spring:
           keycloak:
             issuer-uri: http://${app.keycloak-host}:${app.keycloak-port}/realms/spring-boot-microservices-realm
         registration:
-          api-gateway:
+          microservices-auth-client:
             provider: keycloak
-            client-id: api-gateway
+            client-id: microservices-auth-client
             client-secret: 123456789
             scope: openid, profile, email, roles
 
